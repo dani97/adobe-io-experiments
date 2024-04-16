@@ -1,5 +1,5 @@
 const { Core } = require('@adobe/aio-sdk')
-const { errorResponse, getBearerToken, stringParameters, checkMissingRequestInputs } = require('../utils');
+const { getQueryParams } = require('../utils');
 const { Hono } = require('hono');
 
 async function main (params) {
@@ -9,17 +9,27 @@ async function main (params) {
   const logger = Core.Logger('main', { level: params.LOG_LEVEL || 'info' })
   
   app.get('/hello', (c) => {
-    return {message: "hello app builder"}
+    return c.json({message: "hello app builder"})
   })
 
-  app.all('/test', (_) => {
-    return { test: "this is a different route"}
+  app.all('/test', (c) => {
+    return c.json({ test: "this is a different route", query: c.req.query()})
   })
 
-  const response = await app.request(params['__ow_path']);
+  const options = {
+    headers: params['__ow_headers'],
+    method: params['__ow_method'],
+  }
+  if (params['__ow_body']) {
+    options.body = params['__ow_body']
+  }
+
+  const query = new URLSearchParams(getQueryParams(params));
+
+  const response = await app.request(params['__ow_path'] +'?' + query.toString(), options);
   return {
     statusCode: 200,
-    body: response
+    body: await response.json()
   } 
 }
 

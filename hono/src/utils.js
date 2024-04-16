@@ -23,6 +23,17 @@ function stringParameters (params) {
   return JSON.stringify({ ...params, __ow_headers: headers })
 }
 
+function getQueryParams (params) {
+  let queryParams = Object.assign({}, params);
+  delete queryParams['__ow_path'];
+  delete queryParams['__ow_body'];
+  delete queryParams['__ow_headers'];
+  delete queryParams['__ow_user'];
+  delete queryParams['__ow_method'];
+  delete queryParams['LOG_LEVEL']
+  return queryParams;
+}
+
 /**
  *
  * Returns the list of missing keys giving an object and its required keys.
@@ -133,5 +144,6 @@ module.exports = {
   errorResponse,
   getBearerToken,
   stringParameters,
-  checkMissingRequestInputs
+  checkMissingRequestInputs,
+  getQueryParams
 }
