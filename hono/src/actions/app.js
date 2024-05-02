@@ -21,4 +21,4 @@ app.onError((err, c) => {
   return c.text('Server Error', 500)
 });
 
-module.exports = { app, hello: 1 };
+module.exports = { app };
