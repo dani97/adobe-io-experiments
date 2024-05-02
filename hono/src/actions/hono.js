@@ -1,33 +1,8 @@
 const { Core } = require('@adobe/aio-sdk')
 const { getQueryParams } = require('../utils');
-const { Hono } = require('hono');
+const { app } = require('./app');
 
 async function main (params) {
-  const app = new Hono();
-
-  // create a Logger
-  const logger = Core.Logger('main', { level: params.LOG_LEVEL || 'info' })
-  
-  // routes declaration
-  app.get('/hello', (c) => {
-    return c.json({message: "hello app builder"})
-  })
-
-  app.get('/test', (c) => {
-    return c.json({ test: "this is a different route", query: c.req.query()})
-  })
-
-  // default route
-  app.all('/', (c) => {
-    return c.json({ message: "Welcome to homepage"});
-  })
-
-  // error handler
-  app.onError((err, c) => {
-    console.error(`${err}`)
-    return c.text('Server Error', 500)
-  })
-
   // create headers for request
   const options = {
     headers: params['__ow_headers'],
